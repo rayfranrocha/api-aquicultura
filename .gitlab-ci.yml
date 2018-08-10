@@ -69,6 +69,12 @@ build:
   only:
     - branches
 
+deploy:
+  stage: deploy
+  image: nardeas/ssh-agent
+  script:
+    - deploy
+
 # ---------------------------------------------------------------------------
 
 .auto_devops: &auto_devops |
@@ -131,6 +137,13 @@ build:
       return 1
     fi
     echo ""
+  }
+
+  function deploy() {
+    echo "Realizando Deploy no servidor 52.67.48.249"
+    echo "$SSH_PRIVATE_KEY" > ~/aws.pem
+    chmod 400 ~/aws.pem
+    ssh -o StrictHostKeyChecking=no -i ~/sipea-dev.pem ubuntu@52.67.48.249 'docker service update --force api-aquicultura'
   }
 
 before_script:
