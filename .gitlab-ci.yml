@@ -73,7 +73,9 @@ deploy:
   stage: deploy
   image: nardeas/ssh-agent
   script:
-    - deploy
+    - deployToAwsEC2
+  only:
+    - branches
 
 # ---------------------------------------------------------------------------
 
@@ -139,7 +141,7 @@ deploy:
     echo ""
   }
 
-  function deploy() {
+  function deployToAwsEC2() {
     echo "Realizando Deploy no servidor 52.67.48.249"
     echo "$SSH_PRIVATE_KEY" > ~/aws.pem
     chmod 400 ~/aws.pem
