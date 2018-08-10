@@ -143,7 +143,8 @@ deploy:
     echo "Realizando Deploy no servidor 52.67.48.249"
     echo "$SSH_PRIVATE_KEY" > ~/aws.pem
     chmod 400 ~/aws.pem
-    ssh -o StrictHostKeyChecking=no -i ~/sipea-dev.pem ubuntu@52.67.48.249 'docker service update --force api-aquicultura'
+    ssh -o StrictHostKeyChecking=no -i ~/aws.pem ubuntu@52.67.48.249 'sudo docker service update --force api-aquicultura'
+    echo "Deploy realizado com sucesso!"
   }
 
 before_script:
