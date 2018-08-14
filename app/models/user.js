@@ -4,9 +4,7 @@ var userSchema = mongoose.Schema({
     nome: String,
     email: String,
     senha: String,
-    cpf: String,
-    cracha: Object,
-    dadosRecibo: Object
+    cpf: String
 }, {
     timestamps: true
 });
