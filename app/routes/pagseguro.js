@@ -1,20 +1,22 @@
 const http = require('axios');
 const { URLSearchParams } = require('url');
+const parseString = require('xml2js').parseString;
 
 module.exports = (app) => {
     app.post('/pagseguro', function (req, res) {
+        let inscricao = req.body;
 
-        var params = new URLSearchParams()
+        var params = new URLSearchParams();
         params.append('currency', 'BRL');
         params.append('itemId1', '0001');
         params.append('itemDescription1', 'Inscrição no evento Aquicultura na Amazonia');
-        params.append('itemAmount1', '50.00');
+        params.append('itemAmount1', inscricao.valorTotal.toFixed(2));
         params.append('itemQuantity1', "1");
         params.append('reference', '1');
-        params.append('senderName', 'Jose Comprador');
+        params.append('senderName', inscricao.nome);
         params.append('senderAreaCode', '99');
         params.append('senderPhone', '99999999');
-        params.append('senderEmail', 'silas@sandbox.pagseguro.com.br');
+        params.append('senderEmail', inscricao.email);
         params.append('timeout', '25');
         params.append('enableRecovery', "false");
 
@@ -22,13 +24,17 @@ module.exports = (app) => {
             params.toString(),
             { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
             .then(response => {
-                res.type('application/xml');
-                res.json(response.data);
+                let xml = response.data;
+                parseString(xml, (err, result) => {
+                    res.send(result);
+                })
             })
             .catch(error => {
                 res.status(500);
-                res.type('application/xml');
-                res.send(error.response.data);
+                let xml = error.response.data;
+                parseString(xml, (err, result) => {
+                    res.send(result);
+                })
             });
     });
 }
