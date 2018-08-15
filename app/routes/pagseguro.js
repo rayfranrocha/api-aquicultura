@@ -25,8 +25,9 @@ module.exports = (app) => {
                 params.append('senderEmail', 'silas@sandbox.pagseguro.com.br');
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
+                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD');
         
-                http.post('https://ws.pagseguro.uol.com.br/v2/checkout?email=rayfran.rocha.lima@gmail.com&token=A6150825D7D79355547CEFB6C40F2BF8',
+                http.post('https://ws.pagseguro.uol.com.br/v2/checkout?email=pgusmao1@yahoo.com.br&token=AFD3189DDE3A4D83979A591517B78670',
                     params.toString(),
                     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
                     .then(response => {
@@ -37,6 +38,8 @@ module.exports = (app) => {
                                 code: result.checkout.code[0],
                                 dataHora: result.checkout.date[0]
                             }
+                            inscricao.save();
+                            
                             res.send(result);
                         })
                     })
