@@ -11,7 +11,9 @@ var inscricaoSchema = mongoose.Schema({
     sexo: String,
     enderecoRecibo: String,
     telefone: String,
-    status: String
+    status: String,
+    totalAPagar: Number,
+    valorInscricao: Number
 }, {
     timestamps: true
 });
