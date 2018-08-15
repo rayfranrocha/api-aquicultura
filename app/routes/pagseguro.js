@@ -2,7 +2,10 @@ const http = require('axios');
 const mongoose = require('mongoose');
 const { URLSearchParams } = require('url');
 const parseString = require('xml2js').parseString;
-var Inscricao = mongoose.model('Inscricao')
+var Inscricao = mongoose.model('Inscricao');
+var Vaga = mongoose.model('Vaga');
+
+const token = 'A89D2131AFBB4636ABB914211F30A16D';
 
 module.exports = (app) => {
     app.post('/pagseguro', function (req, res) {
@@ -22,14 +25,14 @@ module.exports = (app) => {
                 params.append('senderName', inscricao.dadosBoleto.nome);
                 params.append('senderAreaCode', inscricao.telefone.substr(0,2));
                 params.append('senderPhone', inscricao.telefone.substr(2));
-                params.append('senderEmail', 'silas@sandbox.pagseguro.com.br');
+                params.append('senderEmail', inscricao.user.email);
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
-                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD');
+                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD,BOLETO');
         
-                http.post('https://ws.pagseguro.uol.com.br/v2/checkout?email=pgusmao1@yahoo.com.br&token=AFD3189DDE3A4D83979A591517B78670',
+                http.post(`https://ws.pagseguro.uol.com.br/v2/checkout?email=pgusmao1@yahoo.com.br&token=${token}`,
                     params.toString(),
-                    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+                    { headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-1' } })
                     .then(response => {
                         let xml = response.data;
                         parseString(xml, (err, result) => {
@@ -48,6 +51,33 @@ module.exports = (app) => {
                         res.status(500);
                         let xml = error.response.data;
                         parseString(xml, (err, result) => {
+                            res.send(result);
+                        })
+                    });
+            });
+    });
+
+    app.post('/notificacao', function (req, res) {
+        Inscricao.findOne({pagseguro: {transactionCode: req.body.notificationCode}})
+            .then(inscricao => {
+                http.get(`https://ws.pagseguro.uol.com.br/v3/transactions/notifications/${req.body.notificationCode}?email=pgusmao1@yahoo.com.br&token=${token}`)
+                    .then(response => {
+                        parseString(response.data, (err, result) => {
+
+                            inscricao.statusPagseguro = result;
+                            inscricao.save();
+
+                            var minicurso = inscricao.minicurso;
+
+                            if (minicurso) {
+
+                                Vaga.findOne({nome: minicurso.nome})
+                                    .then(vaga => {
+                                        --vaga.disponiveis;
+                                        vaga.save();
+                                    });
+                            }
+                            
                             res.send(result);
                         })
                     });
