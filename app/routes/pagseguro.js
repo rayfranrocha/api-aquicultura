@@ -61,29 +61,36 @@ module.exports = (app) => {
 
         console.log('Recebendo a notificacao para tratar com o notificationCode', req.body);
 
-        Inscricao.findOne({transactionCode: req.body.notificationCode})
-            .then(inscricao => {
-                http.get(`https://ws.pagseguro.uol.com.br/v3/transactions/notifications/${req.body.notificationCode}?email=pgusmao1@yahoo.com.br&token=${token}`)
-                    .then(response => {
-                        parseString(response.data, (err, result) => {
-
-                            inscricao.statusPagseguro = result;
-                            inscricao.save();
-
-                            var minicurso = inscricao.minicurso;
-
-                            if (minicurso) {
-
-                                Vaga.findOne({nome: minicurso.nome})
-                                    .then(vaga => {
-                                        --vaga.disponiveis;
-                                        vaga.save();
-                                    });
-                            }
-                            
-                            res.send(result);
-                        })
+        http.get(`https://ws.pagseguro.uol.com.br/v3/transactions/notifications/${req.body.notificationCode}?email=pgusmao1@yahoo.com.br&token=${token}`)
+            .then(response => {
+                parseString(response.data, (err, result) => {
+                    
+                    Inscricao.findOne({transactionCode: result.transaction.code[0]})
+                    .then(inscricao => {
+                        
+                        if (!inscricao) {
+                            console.log('Resposta Pagseguro nao encontrada',result);
+                            res.status(500).send('Transaction code Not Found');
+                        }
+                        
+                        inscricao.statusPagseguro = result;
+                        inscricao.save();
+    
+                        var minicurso = inscricao.minicurso;
+    
+                        if (minicurso) {
+    
+                            Vaga.findOne({nome: minicurso.nome})
+                                .then(vaga => {
+                                    --vaga.disponiveis;
+                                    vaga.save();
+                                });
+                        }
+                        
+                        res.send(inscricao);
                     });
+                });
             });
+        
     });
 }
