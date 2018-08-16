@@ -5,7 +5,7 @@ const parseString = require('xml2js').parseString;
 var Inscricao = mongoose.model('Inscricao');
 var Vaga = mongoose.model('Vaga');
 
-const token = 'A89D2131AFBB4636ABB914211F30A16D';
+const token = '27CFC95DBEEA4C5F8E0047736042745C';
 
 module.exports = (app) => {
     app.post('/pagseguro', function (req, res) {
@@ -19,7 +19,7 @@ module.exports = (app) => {
                 params.append('currency', 'BRL');
                 params.append('itemId1', '0001');
                 params.append('itemDescription1', 'Inscrição no evento/minicurso Aquicultura na Amazonia');
-                params.append('itemAmount1', '1.00');// inscricao.totalAPagar.toFixed(2));
+                params.append('itemAmount1', inscricao.totalAPagar.toFixed(2));
                 params.append('itemQuantity1', "1");
                 params.append('reference', '1');
                 params.append('senderName', inscricao.dadosBoleto.nome);
@@ -28,11 +28,11 @@ module.exports = (app) => {
                 params.append('senderEmail', inscricao.user.email);
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
-                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD,BOLETO');
+                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD');
         
                 http.post(`https://ws.pagseguro.uol.com.br/v2/checkout?email=pgusmao1@yahoo.com.br&token=${token}`,
                     params.toString(),
-                    { headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-1' } })
+                    { headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=ISO-8859-1' } })
                     .then(response => {
                         let xml = response.data;
                         parseString(xml, (err, result) => {
