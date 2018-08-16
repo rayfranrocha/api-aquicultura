@@ -29,6 +29,7 @@ module.exports = (app) => {
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
                 params.append('shippingAddressRequired', "false");
+                params.append('notificationURL', `http://api.aquiculturanaamazonia.com.br/notificacao?inscricao=${inscricao._id}`)
                 params.append('acceptPaymentMethodGroup', 'CREDIT_CARD,BOLETO');
         
                 http.post(`https://ws.pagseguro.uol.com.br/v2/checkout?email=pgusmao1@yahoo.com.br&token=${token}`,
@@ -61,12 +62,13 @@ module.exports = (app) => {
     app.post('/notificacao', function (req, res) {
 
         console.log('Recebendo a notificacao para tratar com o notificationCode', req.body);
+        console.log('QueryParam da notificacao', req.query);
 
         http.get(`https://ws.pagseguro.uol.com.br/v3/transactions/notifications/${req.body.notificationCode}?email=pgusmao1@yahoo.com.br&token=${token}`)
             .then(response => {
                 parseString(response.data, (err, result) => {
                     
-                    Inscricao.findOne({transactionCode: result.transaction.code[0]})
+                    Inscricao.findById(req.query.inscricao)
                     .then(inscricao => {
                         
                         if (!inscricao) {
