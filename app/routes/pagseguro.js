@@ -19,7 +19,7 @@ module.exports = (app) => {
                 params.append('currency', 'BRL');
                 params.append('itemId1', '0001');
                 params.append('itemDescription1', 'Inscrição no evento/minicurso Aquicultura na Amazonia');
-                params.append('itemAmount1', '1.00');// inscricao.totalAPagar.toFixed(2));
+                params.append('itemAmount1', inscricao.totalAPagar.toFixed(2));
                 params.append('itemQuantity1', "1");
                 params.append('reference', '1');
                 params.append('senderName', inscricao.dadosBoleto.nome);
@@ -28,7 +28,8 @@ module.exports = (app) => {
                 params.append('senderEmail', inscricao.user.email);
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
-                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD');
+                params.append('shippingAddressRequired', "false");
+                params.append('acceptPaymentMethodGroup', 'CREDIT_CARD,BOLETO');
         
                 http.post(`https://ws.pagseguro.uol.com.br/v2/checkout?email=pgusmao1@yahoo.com.br&token=${token}`,
                     params.toString(),
@@ -71,23 +72,24 @@ module.exports = (app) => {
                         if (!inscricao) {
                             console.log('Resposta Pagseguro nao encontrada',result);
                             res.status(500).send('Transaction code Not Found');
+                        } else {
+                            inscricao.statusPagseguro = result;
+                            inscricao.save();
+        
+                            var minicurso = inscricao.minicurso;
+        
+                            if (minicurso) {
+        
+                                Vaga.findOne({nome: minicurso.nome})
+                                    .then(vaga => {
+                                        --vaga.disponiveis;
+                                        vaga.save();
+                                    });
+                            }
+                            
+                            res.send(inscricao);
                         }
                         
-                        inscricao.statusPagseguro = result;
-                        inscricao.save();
-    
-                        var minicurso = inscricao.minicurso;
-    
-                        if (minicurso) {
-    
-                            Vaga.findOne({nome: minicurso.nome})
-                                .then(vaga => {
-                                    --vaga.disponiveis;
-                                    vaga.save();
-                                });
-                        }
-                        
-                        res.send(inscricao);
                     });
                 });
             });
