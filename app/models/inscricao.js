@@ -15,6 +15,7 @@ var inscricaoSchema = mongoose.Schema({
     totalAPagar: Number,
     valorInscricao: Number,
     pagseguro: Object,
+    transactionCode: String,
     statusPagseguro: Object
 }, {
     timestamps: true

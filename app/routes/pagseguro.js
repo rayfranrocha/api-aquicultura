@@ -58,7 +58,10 @@ module.exports = (app) => {
     });
 
     app.post('/notificacao', function (req, res) {
-        Inscricao.findOne({pagseguro: {transactionCode: req.body.notificationCode}})
+
+        console.log('Recebendo a notificacao para tratar com o notificationCode', req.body);
+
+        Inscricao.findOne({transactionCode: req.body.notificationCode})
             .then(inscricao => {
                 http.get(`https://ws.pagseguro.uol.com.br/v3/transactions/notifications/${req.body.notificationCode}?email=pgusmao1@yahoo.com.br&token=${token}`)
                     .then(response => {
