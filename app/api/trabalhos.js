@@ -18,6 +18,20 @@ module.exports = function (app) {
                         res.status(201).json(trabalho);
                     }
                 });
+        },
+        getAnexo: (req, res) => {
+            let param = req.params.idEformato;
+            const [id, formato] = param.split('.');
+
+            TrabalhoAnexo.findOne({trabalho: id})
+                .then(trabalhoAnexo => {
+                    if (!trabalhoAnexo) {
+                        res.status(404).send('Not found');
+                    } else {
+                        res.contentType('application/pdf');
+                        res.send(trabalhoAnexo.file);
+                    }
+                });
         }
     };
 }

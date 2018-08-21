@@ -16,7 +16,8 @@ function getToken (user) {
       exp: expires,
       email: user.email,
       name: user.nome,
-      id: user._id
+      id: user._id,
+      admin: user.admin
     };
 
     var token = jwt.encode(payload, secret());
@@ -27,7 +28,8 @@ function getToken (user) {
       email: user.email,
       nome: user.nome,
       cpf: user.cpf,
-      id: user._id
+      id: user._id,
+      admin: user.admin
     };
   }
 
