@@ -1,8 +1,26 @@
-var restful = require('node-restful');
 var mongoose = require('mongoose');
 
-var schema = mongoose.model('InscricaoAnexo').schema;
+var InscricaoAnexo = mongoose.model('InscricaoAnexo');
 
 module.exports = (app) => {
-    return restful.model('InscricaoAnexo', schema);
+    return api = {
+        getAnexo: (req, res) => {
+            let param = req.params.idEformato;
+            const [id, formato] = param.split('.');
+
+            if (formato === 'pdf') {
+                InscricaoAnexo.findOne({inscricao: id})
+                .then(anexo => {
+                    if (!anexo) {
+                        res.status(404).send('Not found');
+                    } else {
+                        res.contentType('application/pdf');
+                        res.send(anexo.file);
+                    }
+                });
+            } else {
+                res.status(404).send('Not found');
+            }    
+        }
+    };
 }
