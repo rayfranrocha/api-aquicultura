@@ -4,7 +4,8 @@ var vagaSchema = mongoose.Schema({
     nome: String,
     total: Number,
     disponiveis: Number,
-    preco: Number
+    preco: Number,
+    grupo: Number
 }, {
     timestamps: true
 });
