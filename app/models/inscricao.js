@@ -16,7 +16,12 @@ var inscricaoSchema = mongoose.Schema({
     valorInscricao: Number,
     pagseguro: Object,
     transactionCode: String,
-    statusPagseguro: Object
+    statusPagseguro: Object,
+    valorTotalMinicurso: Number,
+    minicursoGrupo3: Object,
+    pagseguroMinicurso3: Object,
+    transactionCodeMinicurso3: String,
+    statusPagseguroMinicurso3: Object
 }, {
     timestamps: true
 });
