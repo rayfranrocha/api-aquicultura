@@ -2,7 +2,9 @@ var mongoose = require('mongoose');
 
 var inscricaoSchema = mongoose.Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    tipoCompra: {type: String},
     tipoInscricao: String,
+    tipoInscricaoObj: Object,
     formaPagamento: String,
     minicurso: Object,
     dadosBoleto: Object,
@@ -17,11 +19,7 @@ var inscricaoSchema = mongoose.Schema({
     pagseguro: Object,
     transactionCode: String,
     statusPagseguro: Object,
-    valorTotalMinicurso: Number,
-    minicursoGrupo3: Object,
-    pagseguroMinicurso3: Object,
-    transactionCodeMinicurso3: String,
-    statusPagseguroMinicurso3: Object
+    email: String
 }, {
     timestamps: true
 });

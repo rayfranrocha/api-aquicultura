@@ -25,7 +25,7 @@ module.exports = (app) => {
                 params.append('senderName', inscricao.dadosBoleto.nome);
                 params.append('senderAreaCode', inscricao.telefone.substr(0,2));
                 params.append('senderPhone', inscricao.telefone.substr(2));
-                params.append('senderEmail', inscricao.user.email);
+                params.append('senderEmail', inscricao.email);
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
                 params.append('shippingAddressRequired', "false");
