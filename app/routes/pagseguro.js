@@ -79,14 +79,21 @@ module.exports = (app) => {
                             inscricao.save();
         
                             var minicurso = inscricao.minicurso;
-        
                             if (minicurso) {
-        
                                 Vaga.findOne({nome: minicurso.nome})
                                     .then(vaga => {
                                         --vaga.disponiveis;
                                         vaga.save();
                                     });
+                            }
+
+                            var minicurso2 = inscricao.minicurso2;
+                            if (minicurso2) {
+                                Vaga.findOne({nome: minicurso2.nome})
+                                .then(vaga => {
+                                    --vaga.disponiveis;
+                                    vaga.save();
+                                });
                             }
                             
                             res.send(inscricao);
