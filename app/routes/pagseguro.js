@@ -19,7 +19,7 @@ module.exports = (app) => {
                 params.append('currency', 'BRL');
                 params.append('itemId1', '0001');
                 params.append('itemDescription1', 'Inscrição no evento/minicurso Aquicultura na Amazonia');
-                params.append('itemAmount1', inscricao.totalAPagar.toFixed(2));
+                params.append('itemAmount1', '1.00');// inscricao.totalAPagar.toFixed(2));
                 params.append('itemQuantity1', "1");
                 params.append('reference', '1');
                 params.append('senderName', inscricao.dadosBoleto.nome);
