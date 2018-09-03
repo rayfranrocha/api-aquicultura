@@ -11,6 +11,8 @@ module.exports = (app) => {
     app.post('/pagseguro', function (req, res) {
         
         let inscricao = req.body.id;
+        let telefone = inscricao.telefone || '';
+        telefone = telefone.replace(/[() ]/ig, '');
 
         Inscricao.findById(inscricao)
             .populate('user')
@@ -23,8 +25,8 @@ module.exports = (app) => {
                 params.append('itemQuantity1', "1");
                 params.append('reference', '1');
                 params.append('senderName', inscricao.dadosBoleto.nome);
-                params.append('senderAreaCode', inscricao.telefone.substr(0,2));
-                params.append('senderPhone', inscricao.telefone.substr(2));
+                params.append('senderAreaCode', telefone.substr(0,2));
+                params.append('senderPhone', telefone.substr(2));
                 params.append('senderEmail', inscricao.email);
                 params.append('timeout', '25');
                 params.append('enableRecovery', "false");
