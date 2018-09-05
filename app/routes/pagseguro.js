@@ -78,6 +78,19 @@ module.exports = (app) => {
                             res.status(500).send('Transaction code Not Found');
                         } else {
                             inscricao.statusPagseguro = result;
+
+                            if (inscricao.statusPagseguro
+                                && inscricao.statusPagseguro.transaction
+                                && inscricao.statusPagseguro.transaction.status[0] === '7') {
+                                console.log('A inscrição do usuário', inscricao.dadosBoleto.nome, 'Será removida');
+                                console.log('Cancelamento da inscrição efetuado pelo Pagseguro');
+                                inscricao.remove(() => {
+                                    console.log('Delete inscrição realizado com sucesso');
+                                });
+                                return false;
+                            }
+
+                            
                             inscricao.save();
         
                             var minicurso = inscricao.minicurso;
