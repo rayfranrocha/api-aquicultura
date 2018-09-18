@@ -3,9 +3,7 @@ mongoose.Promise = Promise;
 module.exports = function(uri) {
 
 
-	mongoose.connect(uri, {
-		useMongoClient: true
-	});
+	mongoose.connect(uri, {});
 
 	mongoose.connection.on('connected', function() {
 		console.log('Conectado ao MongoDB uri: ' + uri);
