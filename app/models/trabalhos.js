@@ -9,7 +9,10 @@ var trabalho = mongoose.Schema({
     emailAutores: String,
     resumo: String,
     abstract: String,
-    status: {type: String, default: 'Em análise'}
+    status: {type: String, default: 'Em análise'},
+    instituicao: String,
+    areaSubmissao: String,
+    categoriaPremiacao: String
 }, {
     timestamps: true
 });
