@@ -4,7 +4,7 @@ var userSchema = mongoose.Schema({
     nome: String,
     email: String,
     senha: String,
-    cpf: String,
+    cpf: {type: String, unique: true},
     admin: {type: Boolean, default: false}
 }, {
     timestamps: true

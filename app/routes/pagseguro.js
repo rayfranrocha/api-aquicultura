@@ -20,7 +20,7 @@ module.exports = (app) => {
                 var params = new URLSearchParams();
                 params.append('currency', 'BRL');
                 params.append('itemId1', '0001');
-                params.append('itemDescription1', 'Inscrição no evento/minicurso Aquicultura na Amazonia');
+                params.append('itemDescription1', 'Inscricao no evento/minicurso Aquicultura na Amazonia');
                 params.append('itemAmount1', inscricao.totalAPagar.toFixed(2));
                 params.append('itemQuantity1', "1");
                 params.append('reference', '1');
@@ -78,6 +78,19 @@ module.exports = (app) => {
                             res.status(500).send('Transaction code Not Found');
                         } else {
                             inscricao.statusPagseguro = result;
+
+                            if (inscricao.statusPagseguro
+                                && inscricao.statusPagseguro.transaction
+                                && inscricao.statusPagseguro.transaction.status[0] === '7') {
+                                console.log('A inscrição do usuário', inscricao.dadosBoleto.nome, 'Será removida');
+                                console.log('Cancelamento da inscrição efetuado pelo Pagseguro');
+                                inscricao.remove(() => {
+                                    console.log('Delete inscrição realizado com sucesso');
+                                });
+                                return false;
+                            }
+
+
                             inscricao.save();
         
                             var minicurso = inscricao.minicurso;
