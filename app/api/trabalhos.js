@@ -8,6 +8,13 @@ const MAXIMO_TRABALHOS_POR_USUARIO = 2;
 module.exports = function (app) {
     return api = {
         save: (req, res) => {
+
+            // AGRA NAO PODE MAIS SER ENVIADOS TRABALHOS
+            if (1 === 1) {
+                res.status(400).json({message: `A submissão de trabalhos foi encerrada!`});
+                return false;
+            }
+
             // validar para até dois trabalhos por usuario
             Trabalho.find({user: req.body.user})
                 .then(trabalhos => {
